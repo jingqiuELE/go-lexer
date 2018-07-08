@@ -15,7 +15,7 @@
 //     func StringState(l *lexer.L) lexer.StateFunc {
 //             l.Next() // eat starting "
 //             l.Ignore() // drop current value
-//             while l.Peek() != '"' {
+//             for l.Peek() != '"' {
 //                     l.Next()
 //             }
 //             l.Emit(StringToken)
@@ -119,7 +119,6 @@ func (l *L) Ignore() {
 func (l *L) Peek() rune {
 	r := l.Next()
 	l.Rewind()
-
 	return r
 }
 
@@ -154,6 +153,15 @@ func (l *L) Next() rune {
 	l.rewind.push(r)
 
 	return r
+}
+
+func (l *L) Accept(s string) bool {
+	r := l.Next()
+	if strings.ContainsRune(s, r) {
+		return true
+	}
+	r.Rewind()
+	return false
 }
 
 // Take receives a string containing all acceptable strings and will contine
